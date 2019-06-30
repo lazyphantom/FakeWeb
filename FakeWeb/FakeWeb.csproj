@@ -160,6 +160,10 @@
       <Project>{0ad5e063-1f52-4116-82c0-a1db2389602b}</Project>
       <Name>CoreLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoreService\CoreService.csproj">
+      <Project>{C726443A-9688-4B8A-8098-F5FA9176F3D0}</Project>
+      <Name>CoreService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoreWebCommon\CoreWebCommon.csproj">
       <Project>{711c4519-8882-480b-a38b-8c98e73093b3}</Project>
       <Name>CoreWebCommon</Name>

@@ -3,7 +3,12 @@ using NLog;
 
 namespace CoreService
 {
-    public class ApiService
+    public interface IApiService
+    {
+        Task<TResp> PostApi<TReq, TResp>(TReq req);
+    }
+
+    public class ApiService : IApiService
     {
         private readonly Logger _logger;
 

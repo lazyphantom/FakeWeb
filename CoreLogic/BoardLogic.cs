@@ -8,15 +8,27 @@ using CoreWebCommon.Dto;
 
 namespace CoreLogic
 {
-    public class BoardLogic : _BaseLogic
+    public interface IBoardLogic
     {
-        private readonly BoardDa _boardDa;
-        private ApiService ApiService => new ApiService(GetLogger());
+        Task<IsSuccessResult<BoardListDto>> GetBoardList(SearchParamDto search, int pageSize);
+    }
+
+    public class BoardLogic : _BaseLogic, IBoardLogic
+    {
+        private readonly IBoardDa _boardDa;
+        private readonly IApiService _apiService; //=> new ApiService(GetLogger());
+
+        public BoardLogic(Operation operation, IBoardDa da, IApiService apiService) : base(operation)
+        {
+            _boardDa = da ?? new BoardDa(operation);
+            _apiService = apiService;
+        }
 
         public BoardLogic(Operation operation, BoardDa da = null)
             : base(operation)
         {
             _boardDa = da ?? new BoardDa(operation);
+            _apiService = new ApiService(GetLogger());
         }
 
         public async Task<IsSuccessResult<BoardListDto>> GetBoardList(SearchParamDto search, int pageSize)
@@ -28,10 +40,10 @@ namespace CoreLogic
             };
 
             // Http 呼叫 Service 取得資料
-            var resp = await ApiService.PostApi<BoardQueryDto, BoardQueryResp>(queryDto);
+            var resp = await _apiService.PostApi<BoardQueryDto, BoardQueryResp>(queryDto);
 
             if (!resp.IsSuccess || resp.Items == null)
-                return new IsSuccessResult<BoardListDto>() {ErrorMessage = "Error", IsSuccess = false};
+                return new IsSuccessResult<BoardListDto>() { ErrorMessage = "Error", IsSuccess = false };
 
             // 使用 http 的資料 從 DB 取得資料
             var settings = _boardDa.GetBoardData(resp.Items.Select(r => r.Id));
